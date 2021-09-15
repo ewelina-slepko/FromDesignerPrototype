@@ -21,8 +21,15 @@ export interface ElData {
 
 export class ResizableElementComponent implements AfterViewInit {
 
-  @Input('data') public data!: ElData;
-  @Output() resizeEmitter = new EventEmitter<void>();
+  @Input() cellSize!: number;
+  @Output() resizeEmitter = new EventEmitter<number>();
+
+  elementRect = {
+    width: this.cellSize,
+    height: 100,
+    left: 0,
+    top: 0,
+  };
 
   private boxPosition!: { left: number, top: number };
   private containerPos!: { left: number, top: number, right: number, bottom: number };
@@ -38,9 +45,19 @@ export class ResizableElementComponent implements AfterViewInit {
 
     if (this.status === Status.RESIZE) {
       this.resize();
-    } else if (this.status === Status.MOVE) {
-      this.move();
     }
+    // else if (this.status === Status.MOVE) {
+    //   this.move();
+    // }
+  }
+
+  @HostListener('window:mouseup', ['$event'])
+  onMouseUp(): void {
+    if (isNaN(this.elementRect.width)) {
+      return;
+    }
+
+    this.resizeEmitter.emit(this.elementRect.width);
   }
 
   ngAfterViewInit(): void {
@@ -54,8 +71,8 @@ export class ResizableElementComponent implements AfterViewInit {
   }
 
   private loadContainer(): void {
-    const left = this.boxPosition.left - this.data.left;
-    const top = this.boxPosition.top - this.data.top;
+    const left = this.boxPosition.left - this.elementRect.left;
+    const top = this.boxPosition.top - this.elementRect.top;
     const right = left + 600;
     const bottom = top + 450;
     this.containerPos = {left, top, right, bottom};
@@ -65,7 +82,7 @@ export class ResizableElementComponent implements AfterViewInit {
     if (status === 1) {
       event.stopPropagation();
     } else if (status === 2) {
-      this.mouseClick = {x: event.clientX, y: event.clientY, left: this.data.left, top: this.data.top};
+      this.mouseClick = {x: event.clientX, y: event.clientY, left: this.elementRect.left, top: this.elementRect.top};
     } else {
       this.loadBox();
     }
@@ -73,12 +90,11 @@ export class ResizableElementComponent implements AfterViewInit {
   }
 
   private resize(): void {
-    this.data.width = Number(this.mouse.x > this.boxPosition.left) ? this.mouse.x - this.boxPosition.left : 0;
-    this.resizeEmitter.emit();
+    this.elementRect.width = Number(this.mouse.x > this.boxPosition.left) ? this.mouse.x - this.boxPosition.left : 0;
   }
 
   private move(): void {
-    this.data.left = this.mouseClick.left + (this.mouse.x - this.mouseClick.x);
-    this.data.top = this.mouseClick.top + (this.mouse.y - this.mouseClick.y);
+    this.elementRect.left = this.mouseClick.left + (this.mouse.x - this.mouseClick.x);
+    this.elementRect.top = this.mouseClick.top + (this.mouse.y - this.mouseClick.y);
   }
 }
