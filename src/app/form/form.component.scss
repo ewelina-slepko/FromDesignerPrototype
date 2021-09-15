@@ -1,0 +1,16 @@
+.table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-row {
+  display: table-row;
+  height: 6rem;
+}
+
+.table-cell {
+  display: table-cell;
+  padding: 1em;
+  border: #f0f0f0 1px solid;
+}
