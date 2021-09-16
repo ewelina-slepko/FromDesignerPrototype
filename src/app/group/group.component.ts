@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ElData} from '../shared/resizable-element/resizable-element.component';
 
 const columns = 4;
@@ -12,7 +12,7 @@ const cellWidth = (window.innerWidth - gapsWidth) / columns;
   styleUrls: ['./group.component.scss']
 })
 
-export class GroupComponent implements OnInit {
+export class GroupComponent {
 
   group = [
     {
@@ -46,14 +46,8 @@ export class GroupComponent implements OnInit {
   };
 
   isDragging!: boolean;
-  dragShadowWidth!: number;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-
-  }
+  shadowWidth!: number;
+  dragShadowHeight!: number;
 
   get groupArea(): string[] {
     return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
@@ -72,36 +66,49 @@ export class GroupComponent implements OnInit {
     this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
   }
 
-  drop(data: ElData, index: number): void {
-    if (data.left) {
-      const diff = this.group[index].columnEnd - this.group[index].columnStart;
-      const width = (diff ? diff : 1) * cellWidth;
-      const centerVal = width / 2;
-      this.group[index].columnStart = Math.ceil((data.left + centerVal) / cellWidth);
-      this.group[index].columnEnd = Math.ceil((data.left + width + centerVal) / cellWidth);
-    }
-
-    if (data.top) {
-      // console.log('top', data);
-    }
+  drop(element: ElData, index: number): void {
+    this.setX(element.left, index);
+    this.setY(element.top, index);
 
     this.isDragging = false;
   }
 
+  setX(xPos: number, index: number): void {
+    const cols = this.group[index].columnEnd - this.group[index].columnStart;
+    const width = (cols ? cols : 1) * cellWidth;
+    const xCenterVal = width / 3;
+    this.group[index].columnStart = Math.ceil((xPos + xCenterVal) / cellWidth);
+    this.group[index].columnEnd = Math.ceil((xPos + width + xCenterVal) / cellWidth);
+  }
+
+  setY(yPos: number, index: number): void {
+    const rows = this.group[index].rowEnd - this.group[index].rowStart;
+    const height = (rows ? rows : 1) * 50; //todo do dokładnego określenia wysokości komórki
+    const yCenterVal = height / 2;
+    this.group[index].rowStart = Math.ceil((yPos + yCenterVal) / 50);
+    this.group[index].rowEnd = Math.ceil((yPos + height + yCenterVal) / 50);
+  }
+
   drag(data: ElData, index: number): void {
     this.isDragging = true;
-    if (data.left) {
-      const diff = this.group[index].columnEnd - this.group[index].columnStart;
-      this.dragShadowWidth = (diff ? diff : 1) * cellWidth;
-      const centerVal = this.dragShadowWidth / 2;
-      this.dragShade.columnStart = Math.ceil((data.left + centerVal) / cellWidth);
-      this.dragShade.columnEnd = Math.ceil((data.left + this.dragShadowWidth + centerVal) / cellWidth);
-      this.dragShade.rowStart = this.group[index].rowStart;
-      this.dragShade.rowEnd = this.group[index].rowEnd;
-    }
 
-    if (data.top) {
-      // console.log('top', data);
-    }
+    this.setShadeX(data.left, index);
+    this.setShadeY(data.top, index);
+  }
+
+  setShadeX(xPos: number, index: number): void {
+    const cols = this.group[index].columnEnd - this.group[index].columnStart;
+    this.shadowWidth = (cols ? cols : 1) * cellWidth;
+    const xCenterValue = this.shadowWidth / 3;
+    this.dragShade.columnStart = Math.ceil((xPos + xCenterValue) / cellWidth);
+    this.dragShade.columnEnd = Math.ceil((xPos + this.shadowWidth + xCenterValue) / cellWidth);
+  }
+
+  setShadeY(yPos: number, index: number): void {
+    const rows = this.group[index].rowEnd - this.group[index].rowStart;
+    const shadowHeight = (rows ? rows : 1) * 50;
+    const yCenterVal = shadowHeight / 2;
+    this.dragShade.rowStart = Math.ceil((yPos + yCenterVal) / 50);
+    this.dragShade.rowEnd = Math.ceil((yPos + shadowHeight + yCenterVal) / 50);
   }
 }
