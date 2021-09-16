@@ -21,13 +21,14 @@ export interface ElData {
 
 export class ResizableElementComponent implements AfterViewInit {
 
-  @Input() cellSize!: any;
+  @Input() cellSize!: number;
   @Output() resizeEmitter = new EventEmitter<number>();
+  @Output() dragEmitter = new EventEmitter<ElData>();
   @Output() dropEmitter = new EventEmitter<ElData>();
 
   elementRect = {
     width: this.cellSize,
-    height: 100,
+    height: 50,
     left: 0,
     top: 0,
   };
@@ -48,12 +49,19 @@ export class ResizableElementComponent implements AfterViewInit {
       this.resize();
     } else if (this.status === Status.MOVE) {
       this.move();
+      if (this.elementRect.left || this.elementRect.top) {
+        const location = {
+          left: this.box.nativeElement.getBoundingClientRect().left,
+          top: this.box.nativeElement.getBoundingClientRect().top
+        } as ElData;
+        this.dragEmitter.emit(location);
+      }
     }
   }
 
   @HostListener('window:mouseup', ['$event'])
   onMouseUp(): void {
-    
+
     if (!isNaN(this.elementRect.width)) {
       this.resizeEmitter.emit(this.elementRect.width);
       return;

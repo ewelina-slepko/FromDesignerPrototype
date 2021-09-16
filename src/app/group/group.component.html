@@ -3,12 +3,17 @@
     <app-resizable-element
       (resizeEmitter)="changeSize($event, i)"
       (dropEmitter)="drop($event, i)"
+      (dragEmitter)="drag($event, i)"
       [cellSize]="templateColumns">
       <mat-form-field [style.width]="'100%'">
         <input matInput
                placeholder="Przykładowy input">
       </mat-form-field>
     </app-resizable-element>
+  </div>
+  <div *ngIf="isDragging" [style.grid-area]="dragShadeArea" class="shadow">
+    <div [style.width.px]="dragShadowWidth"
+         [style.height.px]="50"></div>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 <div #box class="resizable-draggable"
      [style.width.px]="elementRect.width"
+     [style.height.px]="elementRect.height"
      [style.transform]="'translate3d('+ elementRect.left + 'px,' + elementRect.top + 'px,' + '0px)'"
      [class.active]="status === 1 || status === 2"
      (mousedown)="setStatus($event, 2)"
