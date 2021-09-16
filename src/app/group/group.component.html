@@ -1,5 +1,5 @@
 <div class="grid" [style.grid-template-columns]="templateColumns">
-  <div *ngFor="let el of groupArea; let i = index" class="cell" [style.grid-area]="el">
+  <div *ngFor="let el of groupArea; let i = index" [style.grid-area]="el">
     <app-resizable-element
       (resizeEmitter)="changeSize($event, i)"
       (dropEmitter)="drop($event, i)"

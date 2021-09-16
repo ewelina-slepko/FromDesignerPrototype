@@ -5,11 +5,11 @@
   grid-template-columns: repeat(4, 300px)
 }
 
-.cell {
-  border: black 1px solid;
-  background-color: lightgreen;
+.shadow {
+  background-color: #b0d6b0;
 }
 
-.shadow {
-  background-color: lightblue;
+::ng-deep .mat-form-field-wrapper {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }

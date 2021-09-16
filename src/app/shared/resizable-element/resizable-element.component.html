@@ -9,7 +9,4 @@
   <ng-content [style.width]="'100%'"></ng-content>
 
   <div class="resize-action" (mousedown)="setStatus($event, 1)"></div>
-  <span>{{elementRect.width | number:'1.0-0'}}px</span>
-  <span>{{elementRect.height | number:'1.0-0'}}px</span>
-  <span>({{elementRect.left}}, {{elementRect.top}})</span>
 </div>

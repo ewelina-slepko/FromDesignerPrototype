@@ -24,17 +24,17 @@ export class GroupComponent {
       rowStart: 1,
       rowEnd: 1,
       columnStart: 2,
-      columnEnd: 4
+      columnEnd: 2
     }, {
-      rowStart: 2,
-      rowEnd: 2,
-      columnStart: 1,
-      columnEnd: 1
-    }, {
-      rowStart: 2,
-      rowEnd: 2,
+      rowStart: 1,
+      rowEnd: 1,
       columnStart: 3,
-      columnEnd: 5
+      columnEnd: 3
+    }, {
+      rowStart: 1,
+      rowEnd: 1,
+      columnStart: 4,
+      columnEnd: 4
     }
   ];
 
