@@ -1,7 +1,8 @@
 <div class="grid" [style.grid-template-columns]="templateColumns">
   <div *ngFor="let el of groupArea; let i = index" class="cell" [style.grid-area]="el">
     <app-resizable-element
-      (resizeEmitter)="compareSize($event, i)"
+      (resizeEmitter)="changeSize($event, i)"
+      (dropEmitter)="drop($event, i)"
       [cellSize]="templateColumns">
       <mat-form-field [style.width]="'100%'">
         <input matInput
@@ -10,22 +11,4 @@
     </app-resizable-element>
   </div>
 </div>
-
-<!--<div class="table" #grid>-->
-<!--  <div class="table-row">-->
-<!--  <div *ngFor="let col of columns" class="table-cell" #cell></div>-->
-<!--</div>-->
-<!--<div class="table-row">-->
-<!--  <div *ngFor="let col of columns" class="table-cell" #cell></div>-->
-<!--</div>-->
-<!--</div>-->
-
-<!--<app-resizable-element-->
-<!--  [gridRect]="gridRect"-->
-<!--  (resizeEmitter)="compareSize()">-->
-<!--  <mat-form-field [style.width]="'100%'">-->
-<!--    <input matInput-->
-<!--           placeholder="Przykładowy input">-->
-<!--  </mat-form-field>-->
-<!--</app-resizable-element>-->
 

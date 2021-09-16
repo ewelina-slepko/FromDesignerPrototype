@@ -1,4 +1,5 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ElData} from '../shared/resizable-element/resizable-element.component';
 
 const columns = 4;
 const gapsWidth = (columns - 1) * 4;
@@ -36,13 +37,6 @@ export class GroupComponent implements OnInit {
     }
   ];
 
-  // @ViewChild('grid') grid!: ElementRef;
-  // @ViewChild('cell') cell!: ElementRef;
-  // columns = Array(4).fill(null);
-  gridRect!: DOMRect;
-
-  // cellRect!: DOMRect;
-
   constructor() {
   }
 
@@ -50,41 +44,28 @@ export class GroupComponent implements OnInit {
 
   }
 
-  get groupArea() {
+  get groupArea(): string[] {
     return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
   }
 
-  get templateColumns() {
+  get templateColumns(): string {
     return `repeat(${columns}, ${cellWidth}px)`;
   }
 
-  // ngAfterViewInit(): void {
-  //   this.gridRect = this.grid.nativeElement.getBoundingClientRect();
-  //   this.cellRect = this.cell.nativeElement.getBoundingClientRect();
-  // }
-
-  compareSize(width: number, index: number): void {
+  changeSize(width: number, index: number): void {
     const compare = Math.ceil(width / cellWidth) + 1;
-    console.log('loguje?', compare);
-    console.log('i', index);
-    console.log('colStart', this.group[index].columnStart);
-
-
-    // if (this.group[index].columnStart > 1) {
-    //   this.group[index].columnEnd = compare;
-    //   return;
-    // }
-
     this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
-    // console.log('el', this.elementRect);
-    // console.log('grid val', this.gridRect);
-    // console.log('cell val', this.cell);
-
-
-    // if (this.elData.width > cellVal.width) {
-    //   this.elData.width = this.elData.width * 2;
-    //   this.elData.left = cellVal.left;
-    // }
   }
 
+  drop(data: ElData, index: number) {
+    if (data.left) {
+      const width = (this.group[index].columnEnd - this.group[index].columnStart) * cellWidth;
+      this.group[index].columnStart = Math.ceil(data.left / cellWidth);
+      this.group[index].columnEnd = Math.ceil((data.left + width) / cellWidth);
+    }
+
+    if (data.top) {
+      console.log('top', data);
+    }
+  }
 }
