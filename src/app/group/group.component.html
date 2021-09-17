@@ -5,15 +5,21 @@
       (dropEmitter)="drop($event, i)"
       (dragEmitter)="drag($event, i)"
       [cellSize]="templateColumns">
-      <mat-form-field [style.width]="'100%'">
+      <mat-form-field *ngIf="!isTextArea(i)" [style.width]="'100%'">
         <input matInput
-               placeholder="Przykładowy input">
+               placeholder="Przykładowy input"
+               type="textarea">
+      </mat-form-field>
+
+      <mat-form-field *ngIf="isTextArea(i)" [style.width]="'100%'" appearance="outline">
+        <mat-label>Leave a comment</mat-label>
+        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
       </mat-form-field>
     </app-resizable-element>
   </div>
   <div *ngIf="isDragging" [style.grid-area]="dragShadeArea" class="shadow">
     <div [style.width.px]="shadowWidth"
-         [style.height.px]="50"></div>
+         [style.height.px]="100"></div>
   </div>
 </div>
 

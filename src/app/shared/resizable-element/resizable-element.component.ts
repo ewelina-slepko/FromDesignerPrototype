@@ -28,7 +28,7 @@ export class ResizableElementComponent implements AfterViewInit {
 
   elementRect = {
     width: this.cellSize,
-    height: 50,
+    height: 100,
     left: 0,
     top: 0,
   };

@@ -19,22 +19,26 @@ export class GroupComponent {
       rowStart: 1,
       rowEnd: 1,
       columnStart: 1,
-      columnEnd: 1
+      columnEnd: 1,
+      textarea: true,
     }, {
       rowStart: 1,
       rowEnd: 1,
       columnStart: 2,
-      columnEnd: 2
+      columnEnd: 2,
+      textarea: false,
     }, {
       rowStart: 1,
       rowEnd: 1,
       columnStart: 3,
-      columnEnd: 3
+      columnEnd: 3,
+      textarea: false,
     }, {
       rowStart: 1,
       rowEnd: 1,
       columnStart: 4,
-      columnEnd: 4
+      columnEnd: 4,
+      textarea: true
     }
   ];
 
@@ -61,6 +65,10 @@ export class GroupComponent {
     return `${this.dragShade.rowStart} / ${this.dragShade.columnStart} / ${this.dragShade.rowEnd} / ${this.dragShade.columnEnd}`;
   }
 
+  isTextArea(i: number): boolean {
+    return this.group[i].textarea;
+  }
+
   changeSize(width: number, index: number): void {
     const compare = Math.ceil(width / cellWidth) + 1;
     this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
@@ -83,10 +91,10 @@ export class GroupComponent {
 
   setY(yPos: number, index: number): void {
     const rows = this.group[index].rowEnd - this.group[index].rowStart;
-    const height = (rows ? rows : 1) * 50; //todo do dokładnego określenia wysokości komórki
+    const height = (rows ? rows : 1) * 100; //todo do dokładnego określenia wysokości komórki
     const yCenterVal = height / 2;
-    this.group[index].rowStart = Math.ceil((yPos + yCenterVal) / 50);
-    this.group[index].rowEnd = Math.ceil((yPos + height + yCenterVal) / 50);
+    this.group[index].rowStart = Math.ceil((yPos + yCenterVal) / 100);
+    this.group[index].rowEnd = Math.ceil((yPos + height + yCenterVal) / 100);
   }
 
   drag(data: ElData, index: number): void {
@@ -106,9 +114,9 @@ export class GroupComponent {
 
   setShadeY(yPos: number, index: number): void {
     const rows = this.group[index].rowEnd - this.group[index].rowStart;
-    const shadowHeight = (rows ? rows : 1) * 50;
+    const shadowHeight = (rows ? rows : 1) * 100;
     const yCenterVal = shadowHeight / 2;
-    this.dragShade.rowStart = Math.ceil((yPos + yCenterVal) / 50);
-    this.dragShade.rowEnd = Math.ceil((yPos + shadowHeight + yCenterVal) / 50);
+    this.dragShade.rowStart = Math.ceil((yPos + yCenterVal) / 100);
+    this.dragShade.rowEnd = Math.ceil((yPos + shadowHeight + yCenterVal) / 100);
   }
 }

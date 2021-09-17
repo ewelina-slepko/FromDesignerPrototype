@@ -1,5 +1,8 @@
 .resizable-draggable {
   outline: 1px dashed green;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   &.active {
     outline-style: solid;
@@ -42,12 +45,20 @@
   }
 }
 
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
 ::ng-deep .mat-form-field-label {
   color: green !important;
 }
 
 ::ng-deep.mat-form-field-underline {
   background-color: green !important;
+}
+
+::ng-deep.mat-form-field-outline {
+  color: green !important;
 }
 
 ::ng-deep.mat-form-field-ripple {
