@@ -4,6 +4,14 @@ export const enum Status {
   MOVE = 2
 }
 
+export interface ElementOnGrid {
+  rowStart: number;
+  rowEnd: number;
+  columnStart: number;
+  columnEnd: number;
+  textarea: boolean;
+}
+
 export interface ElementData {
   left: number;
   top: number;

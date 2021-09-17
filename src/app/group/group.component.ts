@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
-import {ElementData} from '../shared/resizable-element/dtos';
+import {ElementData, ElementOnGrid} from '../shared/resizable-element/dtos';
+import {group} from './mockData';
 
 @Component({
   selector: 'app-group',
@@ -9,116 +10,98 @@ import {ElementData} from '../shared/resizable-element/dtos';
 
 export class GroupComponent {
 
-  group = [
-    {
-      rowStart: 1,
-      rowEnd: 1,
-      columnStart: 1,
-      columnEnd: 1,
-      textarea: true,
-    }, {
-      rowStart: 1,
-      rowEnd: 1,
-      columnStart: 2,
-      columnEnd: 2,
-      textarea: false,
-    }, {
-      rowStart: 1,
-      rowEnd: 1,
-      columnStart: 3,
-      columnEnd: 3,
-      textarea: false,
-    }, {
-      rowStart: 1,
-      rowEnd: 1,
-      columnStart: 4,
-      columnEnd: 4,
-      textarea: true
-    }
-  ];
-
-  dragShade = {
-    rowStart: 1,
-    rowEnd: 1,
-    columnStart: 1,
-    columnEnd: 1
-  };
+  group = group as ElementOnGrid[];
+  shadow = {} as ElementOnGrid;
 
   columns = 4;
-
-  gapsWidth = (this.columns - 1) * 4;
-  cellWidth = (window.innerWidth - this.gapsWidth) / this.columns;
-  cellHeight = 100;
-
+  gridGapsWidth = (this.columns - 1) * 4;
+  gridCellWidth = (window.innerWidth - this.gridGapsWidth) / this.columns;
+  gridCellHeight = 100;
   shadowWidth!: number;
   shadowHeight!: number;
 
-  isDragging!: boolean;
+  isDragActive!: boolean;
 
-  get groupArea(): string[] {
-    return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
+  setElementSize(width: number, index: number): void {
+    const compare = Math.ceil(width / this.gridCellWidth) + 1;
+    this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
   }
 
-  get templateColumns(): string {
-    return `repeat(${this.columns}, ${this.cellWidth}px)`;
+  drag(data: ElementData, index: number): void {
+    this.isDragActive = true;
+    this.setShadeX(data.left, index);
+    this.setShadeY(data.top, index);
   }
 
-  get dragShadeArea(): string {
-    return `${this.dragShade.rowStart} / ${this.dragShade.columnStart} / ${this.dragShade.rowEnd} / ${this.dragShade.columnEnd}`;
+  drop(element: ElementData, index: number): void {
+    this.isDragActive = false;
+    this.setElementX(element.left, index);
+    this.setElementY(element.top, index);
+  }
+
+  private setElementX(xPos: number, i: number): void {
+    const elementWidth = this.getSelectedElementWidth(i);
+    this.group[i].columnStart = this.calcColumnStart(xPos, elementWidth);
+    this.group[i].columnEnd = this.calcColumnEnd(xPos, elementWidth);
+  }
+
+  private setElementY(yPos: number, i: number): void {
+    const elementHeight = this.getSelectedElementHeight(i);
+    this.group[i].rowStart = this.calcRowStart(yPos, elementHeight);
+    this.group[i].rowEnd = this.calcRowEnd(yPos, elementHeight);
+  }
+
+  private setShadeX(xPos: number, i: number): void {
+    this.shadowWidth = this.getSelectedElementWidth(i);
+    this.shadow.columnStart = this.calcColumnStart(xPos, this.shadowWidth);
+    this.shadow.columnEnd = this.calcColumnEnd(xPos, this.shadowWidth);
+  }
+
+  private setShadeY(yPos: number, i: number): void {
+    this.shadowHeight = this.getSelectedElementHeight(i);
+    this.shadow.rowStart = this.calcRowStart(yPos, this.shadowHeight);
+    this.shadow.rowEnd = this.calcRowEnd(yPos, this.shadowHeight);
   }
 
   isTextArea(i: number): boolean {
     return this.group[i].textarea;
   }
 
-  changeSize(width: number, index: number): void {
-    const compare = Math.ceil(width / this.cellWidth) + 1;
-    this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
+  private getSelectedElementWidth(i: number): number {
+    const occupiedColumns = this.group[i].columnEnd - this.group[i].columnStart;
+    return (occupiedColumns ? occupiedColumns : 1) * this.gridCellWidth;
   }
 
-  drop(element: ElementData, index: number): void {
-    this.setX(element.left, index);
-    this.setY(element.top, index);
-
-    this.isDragging = false;
+  private getSelectedElementHeight(i: number): number {
+    const occupiedRows = this.group[i].rowEnd - this.group[i].rowStart;
+    return (occupiedRows ? occupiedRows : 1) * this.gridCellHeight;
   }
 
-  setX(xPos: number, index: number): void {
-    const cols = this.group[index].columnEnd - this.group[index].columnStart;
-    const width = (cols ? cols : 1) * this.cellWidth;
-    const xCenterVal = width / 3;
-    this.group[index].columnStart = Math.ceil((xPos + xCenterVal) / this.cellWidth);
-    this.group[index].columnEnd = Math.ceil((xPos + width + xCenterVal) / this.cellWidth);
+  private calcColumnStart(xPos: number, width: number): number {
+    return Math.ceil((xPos + (width / 3)) / this.gridCellWidth);
   }
 
-  setY(yPos: number, index: number): void {
-    const rows = this.group[index].rowEnd - this.group[index].rowStart;
-    const height = (rows ? rows : 1) * 100; //todo do dokładnego określenia wysokości komórki
-    const yCenterVal = height / 2;
-    this.group[index].rowStart = Math.ceil((yPos + yCenterVal) / 100);
-    this.group[index].rowEnd = Math.ceil((yPos + height + yCenterVal) / 100);
+  private calcColumnEnd(xPos: number, width: number): number {
+    return Math.ceil((xPos + this.shadowWidth + (width / 3)) / this.gridCellWidth);
   }
 
-  drag(data: ElementData, index: number): void {
-    this.isDragging = true;
-
-    this.setShadeX(data.left, index);
-    this.setShadeY(data.top, index);
+  private calcRowStart(yPos: number, height: number): number {
+    return Math.ceil((yPos + (height / 2)) / this.gridCellHeight);
   }
 
-  setShadeX(xPos: number, index: number): void {
-    const cols = this.group[index].columnEnd - this.group[index].columnStart;
-    this.shadowWidth = (cols ? cols : 1) * this.cellWidth;
-    const xCenterValue = this.shadowWidth / 3;
-    this.dragShade.columnStart = Math.ceil((xPos + xCenterValue) / this.cellWidth);
-    this.dragShade.columnEnd = Math.ceil((xPos + this.shadowWidth + xCenterValue) / this.cellWidth);
+  private calcRowEnd(yPos: number, height: number): number {
+    return Math.ceil((yPos + height + (height / 2)) / this.gridCellHeight);
   }
 
-  setShadeY(yPos: number, index: number): void {
-    const rows = this.group[index].rowEnd - this.group[index].rowStart;
-    const shadowHeight = (rows ? rows : 1) * 100;
-    const yCenterVal = shadowHeight / 2;
-    this.dragShade.rowStart = Math.ceil((yPos + yCenterVal) / 100);
-    this.dragShade.rowEnd = Math.ceil((yPos + shadowHeight + yCenterVal) / 100);
+  get groupArea(): string[] {
+    return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
+  }
+
+  get templateColumns(): string {
+    return `repeat(${this.columns}, ${this.gridCellWidth}px)`;
+  }
+
+  get dragShadeArea(): string {
+    return `${this.shadow.rowStart} / ${this.shadow.columnStart} / ${this.shadow.rowEnd} / ${this.shadow.columnEnd}`;
   }
 }

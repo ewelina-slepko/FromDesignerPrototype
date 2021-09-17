@@ -1,12 +1,12 @@
 <div class="grid" [style.grid-template-columns]="templateColumns">
-  <div *ngFor="let el of groupArea; let i = index" [style.grid-area]="el">
+  <div *ngFor="let element of groupArea; let i = index" [style.grid-area]="element">
     <app-resizable-element
-      (resizeEmitter)="changeSize($event, i)"
+      (resizeEmitter)="setElementSize($event, i)"
       (dropEmitter)="drop($event, i)"
       (dragEmitter)="drag($event, i)"
       [templateColumns]="templateColumns"
-      [cellWidth]="cellWidth"
-      [cellHeight]="cellHeight">
+      [cellWidth]="gridCellWidth"
+      [cellHeight]="gridCellHeight">
       <mat-form-field *ngIf="!isTextArea(i)" [style.width]="'100%'">
         <input matInput
                placeholder="Przykładowy input"
@@ -19,7 +19,8 @@
       </mat-form-field>
     </app-resizable-element>
   </div>
-  <div *ngIf="isDragging" [style.grid-area]="dragShadeArea" class="shadow">
+
+  <div *ngIf="isDragActive" [style.grid-area]="dragShadeArea" class="shadow">
     <div [style.width.px]="shadowWidth"
          [style.height.px]="100"></div>
   </div>
