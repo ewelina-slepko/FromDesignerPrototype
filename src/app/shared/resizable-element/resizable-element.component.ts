@@ -1,17 +1,5 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
-
-const enum Status {
-  OFF = 0,
-  RESIZE = 1,
-  MOVE = 2
-}
-
-export interface ElData {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
+import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AxisCoordinates, ElementData, ElementPosition, MousePosition, Status} from './dtos';
 
 @Component({
   selector: 'app-resizable-element',
@@ -21,96 +9,90 @@ export interface ElData {
 
 export class ResizableElementComponent implements AfterViewInit {
 
-  @Input() cellSize!: number;
+  @Input() templateColumns!: string;
+  @Input() cellWidth!: number;
+  @Input() cellHeight!: number;
+
   @Output() resizeEmitter = new EventEmitter<number>();
-  @Output() dragEmitter = new EventEmitter<ElData>();
-  @Output() dropEmitter = new EventEmitter<ElData>();
+  @Output() dragEmitter = new EventEmitter<ElementData>();
+  @Output() dropEmitter = new EventEmitter<ElementData>();
 
-  elementRect = {
-    width: this.cellSize,
-    height: 100,
-    left: 0,
-    top: 0,
-  };
+  resizableElement = {width: this.cellWidth, height: this.cellHeight, left: 0, top: 0} as ElementData;
 
-  private boxPosition!: { left: number, top: number };
-  private containerPos!: { left: number, top: number, right: number, bottom: number };
-  public mouse!: { x: number, y: number };
+  private elementPosition!: ElementPosition;
   public status: Status = Status.OFF;
-  private mouseClick!: { x: number, y: number, left: number, top: number };
 
-  @ViewChild('box') public box!: ElementRef;
+  public mousePosition!: AxisCoordinates;
+  private mouseClick!: MousePosition;
+
+  @ViewChild('resizableElementRef') public resizableElementRef!: ElementRef;
 
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-    this.mouse = {x: event.clientX, y: event.clientY};
+    this.mousePosition = {x: event.clientX, y: event.clientY};
 
     if (this.status === Status.RESIZE) {
       this.resize();
-    } else if (this.status === Status.MOVE) {
+      return;
+    }
+
+    if (this.status === Status.MOVE) {
       this.move();
-      if (this.elementRect.left || this.elementRect.top) {
-        const location = {
-          left: this.box.nativeElement.getBoundingClientRect().left,
-          top: this.box.nativeElement.getBoundingClientRect().top
-        } as ElData;
-        this.dragEmitter.emit(location);
-      }
+      this.dragEmitter.emit(this.setLocation());
     }
   }
 
   @HostListener('window:mouseup', ['$event'])
   onMouseUp(): void {
 
-    if (!isNaN(this.elementRect.width)) {
-      this.resizeEmitter.emit(this.elementRect.width);
+    if (!isNaN(this.resizableElement.width)) {
+      this.resizeEmitter.emit(this.resizableElement.width);
       return;
     }
 
-    if (this.elementRect.left || this.elementRect.top) {
-      const location = {
-        left: this.box.nativeElement.getBoundingClientRect().left,
-        top: this.box.nativeElement.getBoundingClientRect().top
-      } as ElData;
-      this.dropEmitter.emit(location);
+    if (this.resizableElement.left || this.resizableElement.top) {
+      this.dropEmitter.emit(this.setLocation());
     }
   }
 
   ngAfterViewInit(): void {
-    this.loadBox();
-    this.loadContainer();
+    this.loadElement();
   }
 
-  private loadBox(): void {
-    const {left, top} = this.box.nativeElement.getBoundingClientRect();
-    this.boxPosition = {left, top};
-  }
-
-  private loadContainer(): void {
-    const left = this.boxPosition.left - this.elementRect.left;
-    const top = this.boxPosition.top - this.elementRect.top;
-    const right = left + 600;
-    const bottom = top + 450;
-    this.containerPos = {left, top, right, bottom};
+  private loadElement(): void {
+    const {left, top} = this.resizableElementRef.nativeElement.getBoundingClientRect();
+    this.elementPosition = {left, top} as ElementPosition;
   }
 
   setStatus(event: MouseEvent, status: number): void {
+    this.status = status;
+
     if (status === 1) {
       event.stopPropagation();
-    } else if (status === 2) {
-      this.mouseClick = {x: event.clientX, y: event.clientY, left: this.elementRect.left, top: this.elementRect.top};
-    } else {
-      this.loadBox();
+      return;
     }
-    this.status = status;
+
+    if (status === 2) {
+      this.mouseClick = {x: event.clientX, y: event.clientY, left: this.resizableElement.left, top: this.resizableElement.top};
+      return;
+    }
+
+    this.loadElement();
   }
 
   private resize(): void {
-    this.elementRect.width = Number(this.mouse.x > this.boxPosition.left) ? this.mouse.x - this.boxPosition.left : 0;
+    this.resizableElement.width = Number(this.mousePosition.x > this.elementPosition.left) ? this.mousePosition.x - this.elementPosition.left : 0;
   }
 
   private move(): void {
-    this.elementRect.left = this.mouseClick.left + (this.mouse.x - this.mouseClick.x);
-    this.elementRect.top = this.mouseClick.top + (this.mouse.y - this.mouseClick.y);
+    this.resizableElement.left = this.mouseClick.left + (this.mousePosition.x - this.mouseClick.x);
+    this.resizableElement.top = this.mouseClick.top + (this.mousePosition.y - this.mouseClick.y);
+  }
+
+  private setLocation(): ElementData {
+    return {
+      left: this.resizableElementRef.nativeElement.getBoundingClientRect().left,
+      top: this.resizableElementRef.nativeElement.getBoundingClientRect().top
+    } as ElementData;
   }
 }

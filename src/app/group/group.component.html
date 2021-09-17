@@ -4,7 +4,9 @@
       (resizeEmitter)="changeSize($event, i)"
       (dropEmitter)="drop($event, i)"
       (dragEmitter)="drag($event, i)"
-      [cellSize]="templateColumns">
+      [templateColumns]="templateColumns"
+      [cellWidth]="cellWidth"
+      [cellHeight]="cellHeight">
       <mat-form-field *ngIf="!isTextArea(i)" [style.width]="'100%'">
         <input matInput
                placeholder="Przykładowy input"

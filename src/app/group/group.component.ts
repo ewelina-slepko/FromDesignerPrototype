@@ -1,10 +1,5 @@
 import {Component} from '@angular/core';
-import {ElData} from '../shared/resizable-element/resizable-element.component';
-
-const columns = 4;
-const gapsWidth = (columns - 1) * 4;
-const cellWidth = (window.innerWidth - gapsWidth) / columns;
-
+import {ElementData} from '../shared/resizable-element/dtos';
 
 @Component({
   selector: 'app-group',
@@ -49,16 +44,23 @@ export class GroupComponent {
     columnEnd: 1
   };
 
-  isDragging!: boolean;
+  columns = 4;
+
+  gapsWidth = (this.columns - 1) * 4;
+  cellWidth = (window.innerWidth - this.gapsWidth) / this.columns;
+  cellHeight = 100;
+
   shadowWidth!: number;
-  dragShadowHeight!: number;
+  shadowHeight!: number;
+
+  isDragging!: boolean;
 
   get groupArea(): string[] {
     return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
   }
 
   get templateColumns(): string {
-    return `repeat(${columns}, ${cellWidth}px)`;
+    return `repeat(${this.columns}, ${this.cellWidth}px)`;
   }
 
   get dragShadeArea(): string {
@@ -70,11 +72,11 @@ export class GroupComponent {
   }
 
   changeSize(width: number, index: number): void {
-    const compare = Math.ceil(width / cellWidth) + 1;
+    const compare = Math.ceil(width / this.cellWidth) + 1;
     this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
   }
 
-  drop(element: ElData, index: number): void {
+  drop(element: ElementData, index: number): void {
     this.setX(element.left, index);
     this.setY(element.top, index);
 
@@ -83,10 +85,10 @@ export class GroupComponent {
 
   setX(xPos: number, index: number): void {
     const cols = this.group[index].columnEnd - this.group[index].columnStart;
-    const width = (cols ? cols : 1) * cellWidth;
+    const width = (cols ? cols : 1) * this.cellWidth;
     const xCenterVal = width / 3;
-    this.group[index].columnStart = Math.ceil((xPos + xCenterVal) / cellWidth);
-    this.group[index].columnEnd = Math.ceil((xPos + width + xCenterVal) / cellWidth);
+    this.group[index].columnStart = Math.ceil((xPos + xCenterVal) / this.cellWidth);
+    this.group[index].columnEnd = Math.ceil((xPos + width + xCenterVal) / this.cellWidth);
   }
 
   setY(yPos: number, index: number): void {
@@ -97,7 +99,7 @@ export class GroupComponent {
     this.group[index].rowEnd = Math.ceil((yPos + height + yCenterVal) / 100);
   }
 
-  drag(data: ElData, index: number): void {
+  drag(data: ElementData, index: number): void {
     this.isDragging = true;
 
     this.setShadeX(data.left, index);
@@ -106,10 +108,10 @@ export class GroupComponent {
 
   setShadeX(xPos: number, index: number): void {
     const cols = this.group[index].columnEnd - this.group[index].columnStart;
-    this.shadowWidth = (cols ? cols : 1) * cellWidth;
+    this.shadowWidth = (cols ? cols : 1) * this.cellWidth;
     const xCenterValue = this.shadowWidth / 3;
-    this.dragShade.columnStart = Math.ceil((xPos + xCenterValue) / cellWidth);
-    this.dragShade.columnEnd = Math.ceil((xPos + this.shadowWidth + xCenterValue) / cellWidth);
+    this.dragShade.columnStart = Math.ceil((xPos + xCenterValue) / this.cellWidth);
+    this.dragShade.columnEnd = Math.ceil((xPos + this.shadowWidth + xCenterValue) / this.cellWidth);
   }
 
   setShadeY(yPos: number, index: number): void {
