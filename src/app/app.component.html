@@ -1,5 +1,5 @@
 <div class="container">
   <app-group *ngFor="let group of definition.groups"
-             [fields]="getFields(group.id)"
+             [group]="getFields(group.id)"
              [item]="group"></app-group>
 </div>

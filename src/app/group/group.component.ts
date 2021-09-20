@@ -11,9 +11,8 @@ import {FieldDto, group, GroupDto} from './mockData';
 export class GroupComponent implements OnInit {
 
   @Input() item!: GroupDto;
-  @Input() fields!: FieldDto[];
-
-  group = group as ElementOnGrid[];
+  @Input() group!: FieldDto[];
+  
   shadow = {} as ElementOnGrid;
 
   columns = 4;
@@ -28,32 +27,25 @@ export class GroupComponent implements OnInit {
   isDragActive!: boolean;
 
   ngOnInit(): void {
-    console.log('group', this.item, 'fields', this.fields);
+    console.log('group', this.item, 'fields', this.group);
   }
 
   setElementSize(elementSize: ElementSize, i: number): void {
     if (elementSize.width) {
       const compare = Math.ceil(elementSize.width / this.gridCellWidth) + 1;
-      console.log('width compare', compare);
-      this.group[i].columnEnd = compare + this.group[i].columnStart - 1;
-      console.log('column end', this.group[i].columnEnd);
+      this.group[i].designSettings.position.columnEnd = compare + this.group[i].designSettings.position.columnStart - 1;
     }
 
     if (elementSize.height) {
       const compare = Math.ceil(elementSize.height / this.gridCellHeight) + 1;
-      console.log('height compare', compare);
-      this.group[i].rowEnd = compare + this.group[i].rowStart - 1;
-      console.log('row end', this.group[i].rowEnd);
+      this.group[i].designSettings.position.rowEnd = compare + this.group[i].designSettings.position.rowStart - 1;
     }
-    // this.setShadeX(i);
-    // this.setShadeY(i);
   }
 
   drag(data: ElementData, index: number): void {
     this.isDragActive = true;
     this.setShadeX(data.left, index);
     this.setShadeY(data.top, index);
-    console.log('data', data);
   }
 
   drop(element: ElementData, index: number): void {
@@ -64,14 +56,14 @@ export class GroupComponent implements OnInit {
 
   private setElementX(xPos: number, i: number): void {
     const elementWidth = this.getSelectedElementWidth(i);
-    this.group[i].columnStart = this.calcColumnStart(xPos, elementWidth);
-    this.group[i].columnEnd = this.calcColumnEnd(xPos, elementWidth);
+    this.group[i].designSettings.position.columnStart = this.calcColumnStart(xPos, elementWidth);
+    this.group[i].designSettings.position.columnEnd = this.calcColumnEnd(xPos, elementWidth);
   }
 
   private setElementY(yPos: number, i: number): void {
     const elementHeight = this.getSelectedElementHeight(i);
-    this.group[i].rowStart = this.calcRowStart(yPos, elementHeight);
-    this.group[i].rowEnd = this.calcRowEnd(yPos, elementHeight);
+    this.group[i].designSettings.position.rowStart = this.calcRowStart(yPos, elementHeight);
+    this.group[i].designSettings.position.rowEnd = this.calcRowEnd(yPos, elementHeight);
   }
 
   private setShadeX(xPos: number, i: number): void {
@@ -87,12 +79,12 @@ export class GroupComponent implements OnInit {
   }
 
   private getSelectedElementWidth(i: number): number {
-    const occupiedColumns = this.group[i].columnEnd - this.group[i].columnStart;
+    const occupiedColumns = this.group[i].designSettings.position.columnEnd - this.group[i].designSettings.position.columnStart;
     return (occupiedColumns ? occupiedColumns : 1) * this.gridCellWidth;
   }
 
   private getSelectedElementHeight(i: number): number {
-    const occupiedRows = this.group[i].rowEnd - this.group[i].rowStart;
+    const occupiedRows = this.group[i].designSettings.position.rowEnd - this.group[i].designSettings.position.rowStart;
     return (occupiedRows ? occupiedRows : 1) * this.gridCellHeight;
   }
 
@@ -113,7 +105,7 @@ export class GroupComponent implements OnInit {
   }
 
   get groupArea(): string[] {
-    return this.group.map(el => `${el.rowStart} / ${el.columnStart} / ${el.rowEnd} / ${el.columnEnd}`);
+    return this.group.map(el => `${el.designSettings.position.rowStart} / ${el.designSettings.position.columnStart} / ${el.designSettings.position.rowEnd} / ${el.designSettings.position.columnEnd}`);
   }
 
   get templateColumns(): string {
