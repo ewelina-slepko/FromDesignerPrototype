@@ -12,9 +12,12 @@ export interface ElementOnGrid {
   textarea: boolean;
 }
 
-export interface ElementData {
+export interface ElementData extends ElementSize {
   left: number;
   top: number;
+}
+
+export interface ElementSize {
   width: number;
   height: number;
 }

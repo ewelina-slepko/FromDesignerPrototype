@@ -1,5 +1,8 @@
-<div class="grid" [style.grid-template-columns]="templateColumns">
-  <div *ngFor="let element of groupArea; let i = index" [style.grid-area]="element">
+<h1 class="header">{{item.name}}</h1>
+<div class="grid"
+     [style.grid-template-columns]="templateColumns"
+     [style.grid-template-rows]="templateRows">
+  <div *ngFor="let element of groupArea; let i = index" [style.grid-area]="element" class="cell">
     <app-resizable-element
       (resizeEmitter)="setElementSize($event, i)"
       (dropEmitter)="drop($event, i)"
@@ -7,15 +10,10 @@
       [templateColumns]="templateColumns"
       [cellWidth]="gridCellWidth"
       [cellHeight]="gridCellHeight">
-      <mat-form-field *ngIf="!isTextArea(i)" [style.width]="'100%'">
+      <mat-form-field [style.width]="'100%'">
         <input matInput
                placeholder="Przykładowy input"
                type="textarea">
-      </mat-form-field>
-
-      <mat-form-field *ngIf="isTextArea(i)" [style.width]="'100%'" appearance="outline">
-        <mat-label>Leave a comment</mat-label>
-        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
       </mat-form-field>
     </app-resizable-element>
   </div>

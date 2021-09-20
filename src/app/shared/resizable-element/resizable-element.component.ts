@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {AxisCoordinates, ElementData, ElementPosition, MousePosition, Status} from './dtos';
+import {AxisCoordinates, ElementData, ElementPosition, ElementSize, MousePosition, Status} from './dtos';
 
 @Component({
   selector: 'app-resizable-element',
@@ -13,7 +13,7 @@ export class ResizableElementComponent implements AfterViewInit {
   @Input() cellWidth!: number;
   @Input() cellHeight!: number;
 
-  @Output() resizeEmitter = new EventEmitter<number>();
+  @Output() resizeEmitter = new EventEmitter<ElementSize>();
   @Output() dragEmitter = new EventEmitter<ElementData>();
   @Output() dropEmitter = new EventEmitter<ElementData>();
 
@@ -45,8 +45,9 @@ export class ResizableElementComponent implements AfterViewInit {
   @HostListener('window:mouseup', ['$event'])
   onMouseUp(): void {
 
-    if (!isNaN(this.resizableElement.width)) {
-      this.resizeEmitter.emit(this.resizableElement.width);
+    if (!isNaN(this.resizableElement.width || this.resizableElement.height)) {
+      const resizeData = {width: this.resizableElement.width, height: this.resizableElement.height} as ElementSize;
+      this.resizeEmitter.emit(resizeData);
       return;
     }
 
@@ -57,6 +58,7 @@ export class ResizableElementComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.loadElement();
+    console.log(this.cellWidth, this.cellHeight);
   }
 
   private loadElement(): void {
@@ -82,6 +84,9 @@ export class ResizableElementComponent implements AfterViewInit {
 
   private resize(): void {
     this.resizableElement.width = Number(this.mousePosition.x > this.elementPosition.left) ? this.mousePosition.x - this.elementPosition.left : 0;
+    this.resizableElement.height = Number(this.mousePosition.y > this.elementPosition.top) ? this.mousePosition.y - this.elementPosition.top : 0;
+
+    console.log(this.resizableElement);
   }
 
   private move(): void {

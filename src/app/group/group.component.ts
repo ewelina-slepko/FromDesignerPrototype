@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
-import {ElementData, ElementOnGrid} from '../shared/resizable-element/dtos';
-import {group} from './mockData';
+import {Component, Input, OnInit} from '@angular/core';
+import {ElementData, ElementOnGrid, ElementSize} from '../shared/resizable-element/dtos';
+import {FieldDto, group, GroupDto} from './mockData';
 
 @Component({
   selector: 'app-group',
@@ -8,13 +8,18 @@ import {group} from './mockData';
   styleUrls: ['./group.component.scss']
 })
 
-export class GroupComponent {
+export class GroupComponent implements OnInit {
+
+  @Input() item!: GroupDto;
+  @Input() fields!: FieldDto[];
 
   group = group as ElementOnGrid[];
   shadow = {} as ElementOnGrid;
 
   columns = 4;
+  rows = group.length - 1;
   gridGapsWidth = (this.columns - 1) * 4;
+  gridGaspsHeight = (this.rows - 1) * 4;
   gridCellWidth = (window.innerWidth - this.gridGapsWidth) / this.columns;
   gridCellHeight = 100;
   shadowWidth!: number;
@@ -22,15 +27,33 @@ export class GroupComponent {
 
   isDragActive!: boolean;
 
-  setElementSize(width: number, index: number): void {
-    const compare = Math.ceil(width / this.gridCellWidth) + 1;
-    this.group[index].columnEnd = compare + this.group[index].columnStart - 1;
+  ngOnInit(): void {
+    console.log('group', this.item, 'fields', this.fields);
+  }
+
+  setElementSize(elementSize: ElementSize, i: number): void {
+    if (elementSize.width) {
+      const compare = Math.ceil(elementSize.width / this.gridCellWidth) + 1;
+      console.log('width compare', compare);
+      this.group[i].columnEnd = compare + this.group[i].columnStart - 1;
+      console.log('column end', this.group[i].columnEnd);
+    }
+
+    if (elementSize.height) {
+      const compare = Math.ceil(elementSize.height / this.gridCellHeight) + 1;
+      console.log('height compare', compare);
+      this.group[i].rowEnd = compare + this.group[i].rowStart - 1;
+      console.log('row end', this.group[i].rowEnd);
+    }
+    // this.setShadeX(i);
+    // this.setShadeY(i);
   }
 
   drag(data: ElementData, index: number): void {
     this.isDragActive = true;
     this.setShadeX(data.left, index);
     this.setShadeY(data.top, index);
+    console.log('data', data);
   }
 
   drop(element: ElementData, index: number): void {
@@ -61,10 +84,6 @@ export class GroupComponent {
     this.shadowHeight = this.getSelectedElementHeight(i);
     this.shadow.rowStart = this.calcRowStart(yPos, this.shadowHeight);
     this.shadow.rowEnd = this.calcRowEnd(yPos, this.shadowHeight);
-  }
-
-  isTextArea(i: number): boolean {
-    return this.group[i].textarea;
   }
 
   private getSelectedElementWidth(i: number): number {
@@ -99,6 +118,10 @@ export class GroupComponent {
 
   get templateColumns(): string {
     return `repeat(${this.columns}, ${this.gridCellWidth}px)`;
+  }
+
+  get templateRows(): string {
+    return `repeat(${this.rows}, ${this.gridCellHeight}px)`;
   }
 
   get dragShadeArea(): string {

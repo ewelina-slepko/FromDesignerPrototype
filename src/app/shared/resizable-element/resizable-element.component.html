@@ -1,4 +1,4 @@
-<div #resizableElementRef class="resizable-draggable"
+<div *ngIf="resizableElement" #resizableElementRef class="resizable-draggable"
      [style.width.px]="resizableElement.width"
      [style.height.px]="resizableElement.height"
      [style.transform]="'translate3d('+ resizableElement.left + 'px,' + resizableElement.top + 'px,' + '0px)'"
@@ -7,6 +7,7 @@
      (window:mouseup)="setStatus($event, 0)"
 >
   <ng-content [style.width]="'100%'"></ng-content>
+  {{cellHeight}}
 
   <div class="resize-action" (mousedown)="setStatus($event, 1)"></div>
 </div>

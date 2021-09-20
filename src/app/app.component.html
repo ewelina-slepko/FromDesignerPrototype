@@ -1,3 +1,5 @@
 <div class="container">
-  <app-group></app-group>
+  <app-group *ngFor="let group of definition.groups"
+             [fields]="getFields(group.id)"
+             [item]="group"></app-group>
 </div>
