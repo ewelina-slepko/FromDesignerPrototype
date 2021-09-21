@@ -35,6 +35,7 @@ export interface GroupDto {
 
 export interface FieldDto {
   label: string;
+  fieldName: string;
   designSettings: DesignSettingsDto;
 }
 
@@ -59,6 +60,7 @@ export const definition: DefinitionDto = {
   fields: [
     {
       label: 'Pole 1',
+      fieldName: 'F1',
       designSettings:
         {
           groupId: '1',
@@ -66,12 +68,13 @@ export const definition: DefinitionDto = {
             rowStart: 1,
             rowEnd: 1,
             columnStart: 1,
-            columnEnd: 1,
+            columnEnd: 3,
           }
         }
     },
     {
       label: 'Pole 2',
+      fieldName: 'F2',
       designSettings:
         {
           groupId: '1',
@@ -79,12 +82,13 @@ export const definition: DefinitionDto = {
             rowStart: 2,
             rowEnd: 2,
             columnStart: 1,
-            columnEnd: 1,
+            columnEnd: 3,
           }
         }
     },
     {
       label: 'Pole 3',
+      fieldName: 'F3',
       designSettings:
         {
           groupId: '1',
@@ -98,45 +102,49 @@ export const definition: DefinitionDto = {
     },
     {
       label: 'Pole 4',
+      fieldName: 'F4',
       designSettings:
         {
           groupId: '1',
           position: {
-            rowStart: 3,
-            rowEnd: 3,
+            rowStart: 4,
+            rowEnd: 4,
             columnStart: 1,
-            columnEnd: 1,
-          }
-        }
-    },
-    {
-      label: 'Pole 5',
-      designSettings:
-        {
-          groupId: '2',
-          position: {
-            rowStart: 1,
-            rowEnd: 1,
-            columnStart: 1,
-            columnEnd: 1,
-          }
-        }
-    },
-    {
-      label: 'Pole 6',
-      designSettings:
-        {
-          groupId: '2',
-          position: {
-            rowStart: 1,
-            rowEnd: 1,
-            columnStart: 2,
             columnEnd: 2,
           }
         }
     },
     {
+      label: 'Pole 5',
+      fieldName: 'F5',
+      designSettings:
+        {
+          groupId: '2',
+          position: {
+            rowStart: 1,
+            rowEnd: 1,
+            columnStart: 1,
+            columnEnd: 3,
+          }
+        }
+    },
+    {
+      label: 'Pole 6',
+      fieldName: 'F6',
+      designSettings:
+        {
+          groupId: '2',
+          position: {
+            rowStart: 1,
+            rowEnd: 1,
+            columnStart: 3,
+            columnEnd: 3,
+          }
+        }
+    },
+    {
       label: 'Pole 7',
+      fieldName: 'F7',
       designSettings:
         {
           groupId: '3',

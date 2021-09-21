@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
 import {AxisCoordinates, ElementData, ElementPosition, ElementSize, MousePosition, Status} from './dtos';
 
 @Component({
@@ -8,6 +8,8 @@ import {AxisCoordinates, ElementData, ElementPosition, ElementSize, MousePositio
 })
 
 export class ResizableElementComponent implements AfterViewInit {
+
+  // @Input() gridTopPosition!: number;
 
   @Input() templateColumns!: string;
   @Input() cellWidth!: number;
@@ -58,7 +60,6 @@ export class ResizableElementComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.loadElement();
-    console.log(this.cellWidth, this.cellHeight);
   }
 
   private loadElement(): void {
@@ -85,8 +86,6 @@ export class ResizableElementComponent implements AfterViewInit {
   private resize(): void {
     this.resizableElement.width = Number(this.mousePosition.x > this.elementPosition.left) ? this.mousePosition.x - this.elementPosition.left : 0;
     this.resizableElement.height = Number(this.mousePosition.y > this.elementPosition.top) ? this.mousePosition.y - this.elementPosition.top : 0;
-
-    console.log(this.resizableElement);
   }
 
   private move(): void {

@@ -1,8 +1,9 @@
-<h1 class="header">{{item.name}}</h1>
+<h1 class="header">{{group.name}}</h1>
 <div class="grid"
      [style.grid-template-columns]="templateColumns"
-     [style.grid-template-rows]="templateRows">
+     [style.grid-template-rows]="templateRows" #grid>
   <div *ngFor="let element of groupArea; let i = index" [style.grid-area]="element" class="cell">
+    <!--todo change iteration -->
     <app-resizable-element
       (resizeEmitter)="setElementSize($event, i)"
       (dropEmitter)="drop($event, i)"
@@ -12,7 +13,7 @@
       [cellHeight]="gridCellHeight">
       <mat-form-field [style.width]="'100%'">
         <input matInput
-               placeholder="Przykładowy input"
+               [placeholder]="fields[i].label"
                type="textarea">
       </mat-form-field>
     </app-resizable-element>
