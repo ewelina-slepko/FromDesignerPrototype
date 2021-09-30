@@ -1,9 +1,18 @@
-<div class="container">
-  <app-group *ngFor="let group of definition.groups"
-             [fields]="getFields(group.id)"
-             [group]="group"
-             (fieldEmitter)="saveChanges($event)"></app-group>
-  <div class="button-container">
-    <button mat-button color="primary" (click)="saveTemplate()">Zapisz</button>
+<!--<div class="container">-->
+<!--  <app-group *ngFor="let group of definition.groups"-->
+<!--             [fields]="getFields(group.id)"-->
+<!--             [group]="group"-->
+<!--             (fieldEmitter)="saveChanges($event)"></app-group>-->
+<!--  <div class="button-container">-->
+<!--    <button mat-button color="primary" (click)="saveTemplate()">Zapisz</button>-->
+<!--  </div>-->
+<!--</div>-->
+<div>
+  <div class="container" #container>
+    <h1>Zaprojektuj formularz</h1>
+    <app-form-grid *ngIf="gridContainerWidth"
+                   [elements]="displaySettings.elements"
+                   [gridContainerWidth]="gridContainerWidth"></app-form-grid>
+    {{gridContainerWidth}}
   </div>
 </div>

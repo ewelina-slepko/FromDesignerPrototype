@@ -1,0 +1,24 @@
+.grid {
+  width: 100%;
+  display: grid;
+  border: gray dashed 1px;
+  margin-bottom: 1rem;
+}
+
+.shadow {
+  background-color: #b0d6b0;
+}
+
+::ng-deep .mat-form-field-wrapper {
+  margin-left: 1rem !important;
+  margin-right: 1rem !important;
+}
+
+.cell {
+
+}
+
+.header {
+  margin: 1rem 1rem 0 1rem;
+  text-align: center;
+}

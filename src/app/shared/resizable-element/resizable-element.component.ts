@@ -9,7 +9,7 @@ import {AxisCoordinates, ElementData, ElementPosition, ElementSize, MousePositio
 
 export class ResizableElementComponent implements AfterViewInit {
 
-  // @Input() gridTopPosition!: number;
+  @ViewChild('card') public card: ElementRef;
 
   @Input() templateColumns!: string;
   @Input() cellWidth!: number;

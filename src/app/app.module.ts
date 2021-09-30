@@ -9,12 +9,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import { FormGridComponent } from './form-grid/form-grid.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GroupComponent,
-    ResizableElementComponent
+    ResizableElementComponent,
+    FormGridComponent,
   ],
   imports: [
     BrowserModule,

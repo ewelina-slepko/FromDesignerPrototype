@@ -1,0 +1,23 @@
+<div class="grid"
+     [style.grid-template-columns]="templateColumns"
+     [style.grid-template-rows]="templateRows"
+     [style.grid-gap]="gapSize + 'px'" #grid>
+  <div *ngFor="let element of groupArea; let i = index" [style.grid-area]="element" class="cell">
+    <app-resizable-element *ngIf="!elements[i].elements" (resizeEmitter)="setElementSize($event, i)"
+                           (dropEmitter)="drop($event, i)"
+                           (dragEmitter)="drag($event, i)"
+                           [templateColumns]="templateColumns"
+                           [cellWidth]="gridCellWidth"
+                           [cellHeight]="gridCellHeight">
+    </app-resizable-element>
+
+    <app-form-grid *ngIf="elements[i].elements"
+                   [elements]="elements[i].elements"
+                   [gridContainerWidth]="gridContainerWidth"></app-form-grid>
+  </div>
+
+  <div *ngIf="isDragActive" [style.grid-area]="dragShadeArea" class="shadow">
+    <div [style.width.px]="shadowWidth"
+         [style.height.px]="100"></div>
+  </div>
+</div>

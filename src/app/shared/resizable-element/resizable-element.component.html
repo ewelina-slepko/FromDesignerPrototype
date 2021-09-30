@@ -6,11 +6,9 @@
      (mousedown)="setStatus($event, 2)"
      (window:mouseup)="setStatus($event, 0)"
 >
-  <mat-card class="card">
+  <div class="card" #card>
     <ng-content [style.width]="'100%'"></ng-content>
-    {{cellHeight}}
-  </mat-card>
-
+  </div>
 
   <div class="resize-action" (mousedown)="setStatus($event, 1)"></div>
 </div>

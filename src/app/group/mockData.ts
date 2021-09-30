@@ -1,3 +1,5 @@
+import {element} from 'protractor';
+
 export const group = [
   {
     rowStart: 1,
@@ -158,4 +160,73 @@ export const definition: DefinitionDto = {
     }
   ]
 };
+
+export interface RegistryDisplaySettingsDto {
+  elements: Partial<DisplayGroupDto & FieldDisplaySettings>[];
+}
+
+export interface ElementDisplaySettingsDto {
+  position: PositionDto;
+  area?: string;
+}
+
+export interface DisplayGroupDto extends ElementDisplaySettingsDto {
+  id: number;
+  name: string;
+  elements: Partial<DisplayGroupDto & FieldDisplaySettings>[];
+}
+
+export interface FieldDisplaySettings extends ElementDisplaySettingsDto {
+  fieldName: string;
+}
+
+export const displaySettings: RegistryDisplaySettingsDto = {
+  elements: [
+    {
+      position: {
+        rowStart: 1,
+        rowEnd: 1,
+        columnStart: 1,
+        columnEnd: 9,
+      },
+      fieldName: 'F1'
+    },
+
+    {
+      position: {
+        rowStart: 2,
+        rowEnd: 4,
+        columnStart: 1,
+        columnEnd: 9,
+      },
+      id: 1,
+      name: 'Group1',
+      elements: [
+        {
+          position: {
+            rowStart: 1,
+            rowEnd: 1,
+            columnStart: 1,
+            columnEnd: 2,
+          },
+          fieldName: 'F2'
+        },
+        {
+          position: {
+            rowStart: 1,
+            rowEnd: 1,
+            columnStart: 2,
+            columnEnd: 5,
+          },
+          fieldName: 'F2'
+        },
+      ]
+    }
+
+  ]
+};
+
+
+
+
 
