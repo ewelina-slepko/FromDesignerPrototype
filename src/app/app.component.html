@@ -10,9 +10,8 @@
 <div>
   <div class="container" #container>
     <h1>Zaprojektuj formularz</h1>
-    <app-form-grid *ngIf="gridContainerWidth"
+    <app-form-grid *ngIf="gridContainerData"
                    [elements]="displaySettings.elements"
-                   [gridContainerWidth]="gridContainerWidth"></app-form-grid>
-    {{gridContainerWidth}}
+                   [gridContainerData]="gridContainerData"></app-form-grid>
   </div>
 </div>

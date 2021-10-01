@@ -13,7 +13,7 @@
 
     <app-form-grid *ngIf="elements[i].elements"
                    [elements]="elements[i].elements"
-                   [gridContainerWidth]="gridContainerWidth"></app-form-grid>
+                   [gridContainerData]="gridContainerData"></app-form-grid>
   </div>
 
   <div *ngIf="isDragActive" [style.grid-area]="dragShadeArea" class="shadow">

@@ -187,7 +187,7 @@ export const displaySettings: RegistryDisplaySettingsDto = {
         rowStart: 1,
         rowEnd: 1,
         columnStart: 1,
-        columnEnd: 9,
+        columnEnd: 10,
       },
       fieldName: 'F1'
     },
@@ -197,7 +197,7 @@ export const displaySettings: RegistryDisplaySettingsDto = {
         rowStart: 2,
         rowEnd: 4,
         columnStart: 1,
-        columnEnd: 9,
+        columnEnd: 17,
       },
       id: 1,
       name: 'Group1',

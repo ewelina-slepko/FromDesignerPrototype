@@ -10,16 +10,16 @@ import {ElementData, ElementOnGrid, ElementSize} from '../shared/resizable-eleme
 export class FormGridComponent implements OnInit, AfterViewInit {
 
   @Input() elements!: Partial<DisplayGroupDto & FieldDisplaySettings>[];
-  @Input() gridContainerWidth!: number;
+  @Input() gridContainerData!: DOMRect;
 
   @Output() fieldEmitter = new EventEmitter<Partial<DisplayGroupDto & FieldDisplaySettings>>();
   @ViewChild('grid') public grid!: ElementRef;
 
   gridTopPosition!: number;
   shadow = {} as ElementOnGrid;
-  columns = 8;
+  columns = 16;
   rows!: number;
-  gapSize = 16;
+  gapSize = 8;
   gridGapsWidth = (this.columns - 1) * this.gapSize;
   gridGaspsHeight!: number;
   gridCellWidth: number;
@@ -31,7 +31,7 @@ export class FormGridComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.gridGaspsHeight = (this.rows - 1) * this.gapSize;
-    this.gridCellWidth = (this.gridContainerWidth - this.gridGapsWidth) / this.columns;
+    this.gridCellWidth = (this.gridContainerData.width - this.gridGapsWidth) / this.columns;
     const additionalRows: number[] = [];
 
     this.elements.forEach(el => {
@@ -59,7 +59,6 @@ export class FormGridComponent implements OnInit, AfterViewInit {
     this.fieldEmitter.emit(this.elements[i]);
   }
 
-
   drag(data: ElementData, i: number): void {
     this.isDragActive = true;
     this.setShadeX(data.left, i);
@@ -76,8 +75,9 @@ export class FormGridComponent implements OnInit, AfterViewInit {
 
   private setElementX(xPos: number, i: number): void {
     const elementWidth = this.getSelectedElementWidth(i);
-    this.elements[i].position.columnStart = this.calcColumnStart(xPos);
-    this.elements[i].position.columnEnd = this.calcColumnEnd(xPos);
+    this.elements[i].position.columnStart = this.calcColumnStart(xPos, elementWidth);
+    console.log('column start', this.elements[i].position.columnStart);
+    this.elements[i].position.columnEnd = this.calcColumnEnd(xPos, elementWidth);
   }
 
   private setElementY(yPos: number, i: number): void {
@@ -88,8 +88,8 @@ export class FormGridComponent implements OnInit, AfterViewInit {
 
   private setShadeX(xPos: number, i: number): void {
     this.shadowWidth = this.getSelectedElementWidth(i);
-    this.shadow.columnStart = this.calcColumnStart(xPos);
-    this.shadow.columnEnd = this.calcColumnEnd(xPos);
+    this.shadow.columnStart = this.calcColumnStart(xPos, this.shadowWidth);
+    this.shadow.columnEnd = this.calcColumnEnd(xPos, this.shadowWidth);
   }
 
   private setShadeY(yPos: number, i: number): void {
@@ -108,12 +108,12 @@ export class FormGridComponent implements OnInit, AfterViewInit {
     return (occupiedRows ? occupiedRows : 1) * this.gridCellHeight;
   }
 
-  private calcColumnStart(xPos: number): number {
-    return Math.ceil(xPos / this.gridCellWidth);
+  private calcColumnStart(xPos: number, width: number): number {
+    return Math.ceil((xPos - this.gridContainerData.left) / this.gridCellWidth);
   }
 
-  private calcColumnEnd(xPos: number): number {
-    return Math.ceil((xPos + this.shadowWidth) / this.gridCellWidth);
+  private calcColumnEnd(xPos: number, width: number): number {
+    return Math.ceil((xPos - this.gridContainerData.left + width) / this.gridCellWidth);
   }
 
   private calcRowStart(yPos: number, height: number): number {

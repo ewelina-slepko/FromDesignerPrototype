@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('container') public container!: ElementRef;
   @ViewChild('grid') public grid!: ElementRef;
 
-  gridContainerWidth!: number;
+  gridContainerData!: DOMRect;
 
   definition = definition;
   displaySettings = displaySettings;
@@ -27,7 +27,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.gridContainerWidth = this.container.nativeElement.getBoundingClientRect().width;
+    this.gridContainerData = this.container.nativeElement.getBoundingClientRect();
   }
 
   getFields(id: string): FieldDto[] {
